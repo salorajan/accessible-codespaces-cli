@@ -1,0 +1,132 @@
+================================================================================
+STEP-BY-STEP INSTRUCTIONS: CREATING AND MANAGING GITHUB CODESPACES VIA CLI
+================================================================================
+
+This document provides a clean, step-by-step procedure to authenticate, publish,
+provision, connect to, and manage GitHub Codespaces entirely through the terminal
+using the GitHub CLI (gh), Git, and OpenSSH on Windows.
+
+--------------------------------------------------------------------------------
+STEP 1: GRANT CODESPACE SCOPE TO GITHUB CLI
+--------------------------------------------------------------------------------
+By default, basic GitHub tokens do not include the 'codespace' management scope.
+Run this one-time command in your PowerShell terminal:
+
+    gh auth refresh -h github.com -s codespace
+
+What will happen:
+1. The CLI will display a prompt or open your default web browser.
+2. If prompted with a one-time code (e.g., ABCD-1234), press Enter to open the
+   browser and paste the code.
+3. Click 'Authorize github' to grant Codespace permissions.
+4. Return to your terminal. Verify the status with:
+
+    gh auth status
+
+
+--------------------------------------------------------------------------------
+STEP 2: PUBLISH THE LOCAL REPOSITORY TO GITHUB
+--------------------------------------------------------------------------------
+GitHub Codespaces provisions virtual machines from a GitHub repository.
+From the project folder (C:\salo\acb\code_spaces\space), run:
+
+    gh repo create accessible-codespaces-cli --public --source=. --remote=origin --push
+
+Verification:
+Check that the remote repository is properly configured:
+
+    git remote -v
+
+
+--------------------------------------------------------------------------------
+STEP 3: PROVISION THE CLOUD CODESPACE NON-INTERACTIVELY
+--------------------------------------------------------------------------------
+To avoid interactive arrow-key selection menus (which can be difficult to parse
+with screen readers), use explicit command-line flags:
+
+    gh cs create --repo salorajan/accessible-codespaces-cli --branch master --machine standardLinux32gb --display-name cs-python-dev
+
+Flag explanations:
+- --repo: Your GitHub username and repository name.
+- --branch: The branch to build from (master or main).
+- --machine: Compute specification (e.g., standardLinux32gb for 2 cores, 8GB RAM, 32GB disk).
+- --display-name: An easy-to-read name (cs-python-dev) instead of random auto-generated names.
+
+
+--------------------------------------------------------------------------------
+STEP 4: LIST AND QUERY ACTIVE CODESPACES
+--------------------------------------------------------------------------------
+To check the status of all codespaces associated with your account:
+
+    gh cs list
+
+To view detailed JSON metadata for your specific codespace:
+
+    gh cs view -c cs-python-dev --json name,state,machineDisplayName,createdAt
+
+
+--------------------------------------------------------------------------------
+STEP 5: CONNECT VIA OPENSSH (TERMINAL-FIRST DEVELOPMENT)
+--------------------------------------------------------------------------------
+To connect directly into your cloud container without opening any web browser:
+
+    gh cs ssh -c cs-python-dev
+
+Screen Reader Review Navigation:
+- When connected, your terminal prompt changes to Linux:
+  vscode@codespace:/workspaces/accessible-codespaces-cli$
+- NVDA Users:
+  * Toggle Focus Mode and Browse Mode using: NVDA + Space
+  * Read terminal output line-by-line using Review Mode: Numpad 7, 8, 9 (Desktop)
+    or NVDA + Up/Down/Left/Right arrows.
+- JAWS Users:
+  * Toggle Virtual PC Cursor with Insert + Z or NumPad Plus to review console text.
+
+Run Project Commands Inside the Cloud Container:
+1. Run the CSV missing value analysis and imputation:
+   python3 -m src.cli -i data/sample_data.csv -o data/cleaned_data.csv -s auto
+
+2. Run unit tests:
+   python3 -m unittest discover -s tests -p "test_*.py" -v
+
+3. Disconnect from the SSH session back to Windows:
+   exit
+
+
+--------------------------------------------------------------------------------
+STEP 6: FILE SYNCHRONIZATION (LOCAL <-> CLOUD)
+--------------------------------------------------------------------------------
+Copy files between your Windows host and the cloud container:
+
+1. Upload a local file to the remote Codespace:
+   gh cs cp ./data/sample_data.csv remote:/workspaces/accessible-codespaces-cli/data/sample_data.csv -c cs-python-dev
+
+2. Download generated output from the remote Codespace to Windows:
+   gh cs cp remote:/workspaces/accessible-codespaces-cli/data/cleaned_data.csv ./data/cloud_cleaned_data.csv -c cs-python-dev
+
+
+--------------------------------------------------------------------------------
+STEP 7: PORT FORWARDING (FOR WEB APPS AND APIS)
+--------------------------------------------------------------------------------
+If you run a local web server or API inside the Codespace (e.g., on port 8000),
+forward it to your local machine:
+
+    gh cs ports forward 8000:8000 -c cs-python-dev
+
+You can then access http://localhost:8000 from your Windows machine.
+
+
+--------------------------------------------------------------------------------
+STEP 8: LIFECYCLE MANAGEMENT & QUOTA HYGIENE
+--------------------------------------------------------------------------------
+GitHub Free accounts include a monthly quota of core-hours and storage.
+Always manage your active instances to avoid consuming storage quota.
+
+1. Stop the Codespace (pauses compute, keeps disk storage intact):
+   gh cs stop -c cs-python-dev
+
+2. Delete the Codespace (deletes VM and releases disk storage):
+   gh cs delete -c cs-python-dev --confirm
+
+   (The --confirm flag automatically approves deletion without prompting).
+================================================================================

@@ -1,0 +1,16 @@
+id,name,department,age,salary,performance_score,city
+1,Alice,Engineering,29,75000,4.5,New York
+2,Bob,Marketing,34.5,62000,3.8,Chicago
+3,Charlie,Engineering,35,88000,4.17,San Francisco
+4,Diana,Engineering,42,95000,4.9,Boston
+5,Ethan,Finance,31,79833.33,4.1,New York
+6,Fiona,Marketing,28,58000,3.5,New York
+7,George,Engineering,34.5,82000,4.2,Chicago
+8,Hannah,Finance,38,91000,4.17,Boston
+9,Ian,Engineering,45,79833.33,3.9,San Francisco
+10,Julia,Engineering,26,71000,4.7,New York
+11,Kevin,Marketing,33,64000,3.6,Chicago
+12,Laura,Finance,34.5,89000,4.8,New York
+13,Michael,Engineering,50,105000,4.17,Boston
+14,Nina,Engineering,30,78000,4.3,San Francisco
+15,Oscar,Marketing,27,79833.33,3.7,Chicago

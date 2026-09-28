@@ -1,0 +1,35 @@
+{
+  "name": "Accessible Python Codespace (Headless CLI)",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.enableBell": false,
+        "terminal.integrated.fontSize": 14,
+        "accessibility.signals.terminalBell": {
+          "sound": "off"
+        },
+        "python.analysis.typeCheckingMode": "basic"
+      }
+    }
+  },
+  "remoteEnv": {
+    "PS1": "\\u@codespace:\\w\\$ ",
+    "TERM": "xterm-256color",
+    "PAGER": "cat",
+    "NO_COLOR": "1"
+  },
+  "postCreateCommand": "python3 -m unittest discover -s tests -p 'test_*.py' -v"
+}

@@ -1,0 +1,135 @@
+================================================================================
+GITHUB CODESPACES: FREE TIER USAGE, PRICING STRUCTURE & OPTIMIZATION GUIDE
+================================================================================
+
+This reference guide provides full details on the GitHub Codespaces Free Tier
+allowances, billing calculations, pricing tiers, and practical strategies to
+maximize free compute and storage resources.
+
+--------------------------------------------------------------------------------
+1. GITHUB FREE TIER MONTHLY ALLOWANCES (PERSONAL ACCOUNTS)
+--------------------------------------------------------------------------------
+Every standard GitHub personal account (Free plan) receives a recurring monthly
+allowance that resets on the 1st of each calendar month:
+
+- FREE COMPUTE: 120 core-hours per calendar month.
+- FREE STORAGE: 15 GB-months of Codespaces disk storage per calendar month.
+- DEFAULT SPENDING LIMIT: $0.00 USD (Hard cap preventing accidental charges).
+
+(Note: GitHub Pro accounts receive 180 core-hours and 20 GB-months per month).
+
+
+--------------------------------------------------------------------------------
+2. UNDERSTANDING COMPUTE (CORE-HOURS) CALCULATION
+--------------------------------------------------------------------------------
+Compute is measured in "Core-Hours" (Number of CPU Cores multiplied by the number
+of hours the machine is running).
+
+Formulas & Machine Tier Run Times:
+- 2-Core Machine (8 GB RAM):
+  120 core-hours / 2 cores = 60 HOURS of free runtime per month.
+
+- 4-Core Machine (16 GB RAM):
+  120 core-hours / 4 cores = 30 HOURS of free runtime per month.
+
+- 8-Core Machine (32 GB RAM):
+  120 core-hours / 8 cores = 15 HOURS of free runtime per month.
+
+- 16-Core Machine (64 GB RAM):
+  120 core-hours / 16 cores = 7.5 HOURS of free runtime per month.
+
+Compute billing stops automatically whenever a Codespace is STOPPED or idle.
+
+
+--------------------------------------------------------------------------------
+3. UNDERSTANDING STORAGE (GB-MONTHS) & THE COMMON STORAGE TRAP
+--------------------------------------------------------------------------------
+Storage is measured in "GB-Months" (Gigabytes of disk space allocated over time).
+Standard codespace disks are provisioned with 32 GB of storage.
+
+The Storage Trap:
+- Storage is consumed as long as the codespace EXISTS—even when STOPPED!
+- A stopped codespace still occupies disk storage on GitHub's servers.
+
+How 15 GB-Months storage is consumed:
+- 1 codespace (32 GB disk) kept alive for 1 full month = 32 GB-months (exceeds free tier).
+- 1 codespace (32 GB disk) kept alive for 14 days (half a month) = ~15 GB-months (uses all free tier).
+- 1 codespace created, used for 2 hours, and DELETED immediately = ~0.09 GB-months (near zero).
+
+CRITICAL RULE:
+Always DELETE (gh cs delete) your codespace when you finish your work session,
+rather than just STOPPING it. Your code is preserved in your Git repository.
+
+
+--------------------------------------------------------------------------------
+4. PRICING STRUCTURE (IF SPENDING LIMIT IS ENABLED BEYOND FREE ALLOWANCE)
+--------------------------------------------------------------------------------
+If you intentionally raise your spending limit above $0, GitHub bills at the
+following standard rates:
+
+Storage Rate:
+- $0.07 USD per GB-month of storage.
+
+Compute Rates (Linux):
+- 2 Cores  |  8 GB RAM  | $0.18 USD per hour
+- 4 Cores  | 16 GB RAM  | $0.36 USD per hour
+- 8 Cores  | 32 GB RAM  | $0.72 USD per hour
+- 16 Cores | 64 GB RAM  | $1.44 USD per hour
+- 32 Cores | 128 GB RAM | $2.88 USD per hour
+
+
+--------------------------------------------------------------------------------
+5. STEP-BY-STEP STRATEGIES TO MAXIMIZE FREE TIER USAGE
+--------------------------------------------------------------------------------
+
+STRATEGY 1: Always Select 2-Core Machines
+- When provisioning, always specify the 2-core standardLinux32gb machine:
+  gh cs create --repo <user>/<repo> --machine standardLinux32gb
+- This gives you the full 60 hours of development time.
+
+STRATEGY 2: Set Short Idle Timeouts
+- Configure automatic shutdown after inactivity (default is 30m; reduce to 15m or 10m):
+  gh cs create --repo <user>/<repo> --idle-timeout 15m
+
+STRATEGY 3: Delete After Session (Ephemerality)
+- Commit and push your code to GitHub before ending your session:
+  git add .; git commit -m "save work"; git push
+- Delete the codespace immediately:
+  gh cs delete -c <codespace-name> --confirm
+- When you need to work again tomorrow, spin up a new codespace from GitHub in
+  under 30 seconds.
+
+STRATEGY 4: Keep Spending Limit at $0
+- Ensure your GitHub account spending limit remains at $0 so you never incur
+  unexpected charges:
+  GitHub Web -> Settings -> Billing and plans -> Spending limits -> Codespaces: $0.
+
+
+--------------------------------------------------------------------------------
+6. HOW TO MONITOR AND AUDIT YOUR CURRENT USAGE
+--------------------------------------------------------------------------------
+
+Method A: Via Terminal (GitHub CLI)
+List all active codespaces to ensure no orphaned instances are running:
+    gh cs list
+
+Method B: Via GitHub Web Portal
+1. Navigate to: https://github.com/settings/billing/summary
+2. Under "Usage this month", look for "Codespaces":
+   - Core hours consumed (e.g. 4.2 / 120.0 hrs)
+   - Storage consumed (e.g. 1.8 / 15.0 GB-months)
+3. Manage or delete codespaces anytime at: https://github.com/codespaces
+
+
+--------------------------------------------------------------------------------
+7. SUMMARY QUICK REFERENCE TABLE
+--------------------------------------------------------------------------------
++-------------------+--------------------+--------------------+----------------+
+| Metric / Resource | Free Allowance     | Optimal Settings   | Maximum Yield  |
++-------------------+--------------------+--------------------+----------------+
+| Monthly Compute   | 120 core-hours     | 2-core machine     | 60 hours/month |
+| Monthly Storage   | 15 GB-months       | Delete on exit     | Unlimited runs |
+| Idle Timeout      | Configurable       | 15 minutes         | Saves quota    |
+| Spending Limit    | $0 default safety  | Keep at $0.00      | 100% Free      |
++-------------------+--------------------+--------------------+----------------+
+================================================================================

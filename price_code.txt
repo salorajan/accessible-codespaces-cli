@@ -1,135 +1,155 @@
 ================================================================================
-GITHUB CODESPACES: FREE TIER USAGE, PRICING STRUCTURE & OPTIMIZATION GUIDE
+CLOUD RUNNER COMPARISON & PRICING GUIDE: FREE TIER ONLY
+GitHub Codespaces vs. Google Colab vs. Kaggle Cloud Runner
 ================================================================================
 
-This reference guide provides full details on the GitHub Codespaces Free Tier
-allowances, billing calculations, pricing tiers, and practical strategies to
-maximize free compute and storage resources.
+This document provides a comprehensive overview and comparison of the 100% FREE
+cloud compute tiers across GitHub Codespaces, Google Colab, and Kaggle Cloud
+Runner. It covers compute quotas, storage limits, hardware availability, session
+lifecycles, screen-reader accessibility, and optimization tips.
 
 --------------------------------------------------------------------------------
-1. GITHUB FREE TIER MONTHLY ALLOWANCES (PERSONAL ACCOUNTS)
+1. AT-A-GLANCE COMPARISON MATRIX (FREE TIERS ONLY)
 --------------------------------------------------------------------------------
-Every standard GitHub personal account (Free plan) receives a recurring monthly
-allowance that resets on the 1st of each calendar month:
-
-- FREE COMPUTE: 120 core-hours per calendar month.
-- FREE STORAGE: 15 GB-months of Codespaces disk storage per calendar month.
-- DEFAULT SPENDING LIMIT: $0.00 USD (Hard cap preventing accidental charges).
-
-(Note: GitHub Pro accounts receive 180 core-hours and 20 GB-months per month).
-
-
---------------------------------------------------------------------------------
-2. UNDERSTANDING COMPUTE (CORE-HOURS) CALCULATION
---------------------------------------------------------------------------------
-Compute is measured in "Core-Hours" (Number of CPU Cores multiplied by the number
-of hours the machine is running).
-
-Formulas & Machine Tier Run Times:
-- 2-Core Machine (8 GB RAM):
-  120 core-hours / 2 cores = 60 HOURS of free runtime per month.
-
-- 4-Core Machine (16 GB RAM):
-  120 core-hours / 4 cores = 30 HOURS of free runtime per month.
-
-- 8-Core Machine (32 GB RAM):
-  120 core-hours / 8 cores = 15 HOURS of free runtime per month.
-
-- 16-Core Machine (64 GB RAM):
-  120 core-hours / 16 cores = 7.5 HOURS of free runtime per month.
-
-Compute billing stops automatically whenever a Codespace is STOPPED or idle.
-
-
---------------------------------------------------------------------------------
-3. UNDERSTANDING STORAGE (GB-MONTHS) & THE COMMON STORAGE TRAP
---------------------------------------------------------------------------------
-Storage is measured in "GB-Months" (Gigabytes of disk space allocated over time).
-Standard codespace disks are provisioned with 32 GB of storage.
-
-The Storage Trap:
-- Storage is consumed as long as the codespace EXISTS—even when STOPPED!
-- A stopped codespace still occupies disk storage on GitHub's servers.
-
-How 15 GB-Months storage is consumed:
-- 1 codespace (32 GB disk) kept alive for 1 full month = 32 GB-months (exceeds free tier).
-- 1 codespace (32 GB disk) kept alive for 14 days (half a month) = ~15 GB-months (uses all free tier).
-- 1 codespace created, used for 2 hours, and DELETED immediately = ~0.09 GB-months (near zero).
-
-CRITICAL RULE:
-Always DELETE (gh cs delete) your codespace when you finish your work session,
-rather than just STOPPING it. Your code is preserved in your Git repository.
++-------------------+----------------------+----------------------+----------------------+
+| Feature / Metric  | GitHub Codespaces    | Google Colab (Free)  | Kaggle Cloud Runner  |
++-------------------+----------------------+----------------------+----------------------+
+| Free Compute      | 120 core-hours/month | Dynamic allocation   | 30 GPU hrs/wk +      |
+| Quota             | (= 60 hrs on 2-core) | (~15-20 hrs active)  | 20 TPU hrs/wk        |
++-------------------+----------------------+----------------------+----------------------+
+| CPU & RAM         | 2 vCPUs, 8 GB RAM    | ~2 vCPUs, 12-13 GB   | 4 vCPUs, 30 GB RAM   |
+|                   | (or 4 vCPUs, 16 GB)  | System RAM           |                      |
++-------------------+----------------------+----------------------+----------------------+
+| Free GPU Access   | None (CPU only)      | Nvidia T4 GPU        | 2x Nvidia T4 or      |
+|                   |                      | (subject to quota)   | 1x Nvidia P100 (16GB)|
++-------------------+----------------------+----------------------+----------------------+
+| Free TPU Access   | None                 | TPU v2-8 (dynamic)   | TPU v3-8 (20 hrs/wk) |
++-------------------+----------------------+----------------------+----------------------+
+| Storage Limit     | 15 GB-months         | ~100 GB ephemeral    | 20 GB working disk + |
+|                   | (Persistent disk)    | (+ Google Drive)     | 73 GB scratch space  |
++-------------------+----------------------+----------------------+----------------------+
+| Sudo / Root & OS  | Full Root & Debian   | Limited / Container  | Limited / Container  |
+| Full Customization| (Custom Dockerfile)  | (Pre-set Debian env) | (Pre-set Ubuntu env) |
++-------------------+----------------------+----------------------+----------------------+
+| Terminal / CLI    | Native OpenSSH CLI   | Web-only (Terminal   | Kaggle CLI (API)     |
+| Direct Access     | (gh cs ssh)          | requires Pro/hacks)  | & in-browser console |
++-------------------+----------------------+----------------------+----------------------+
+| Screen Reader     | Exceptional (Direct  | Moderate (Web-based  | Moderate (Web-based  |
+| Accessibility     | Windows Terminal)    | Jupyter shortcuts)   | notebook UI)         |
++-------------------+----------------------+----------------------+----------------------+
+| Max Session Run   | Based on timeout     | Up to 12 hours       | Up to 12 hours       |
+| Time              | (persistent VM disk) | (ephemeral VM)       | (batch / interactive)|
++-------------------+----------------------+----------------------+----------------------+
+| Idle Disconnect   | 15-30 min (custom)   | ~90 minutes          | 40 minutes           |
++-------------------+----------------------+----------------------+----------------------+
+| Best Used For     | Full-stack software, | Fast experiments,    | Heavy ML training,   |
+|                   | CLI dev, web apps,   | Python notebooks,    | data science models, |
+|                   | and accessibility    | deep learning test   | GPU benchmarking     |
++-------------------+----------------------+----------------------+----------------------+
 
 
 --------------------------------------------------------------------------------
-4. PRICING STRUCTURE (IF SPENDING LIMIT IS ENABLED BEYOND FREE ALLOWANCE)
---------------------------------------------------------------------------------
-If you intentionally raise your spending limit above $0, GitHub bills at the
-following standard rates:
-
-Storage Rate:
-- $0.07 USD per GB-month of storage.
-
-Compute Rates (Linux):
-- 2 Cores  |  8 GB RAM  | $0.18 USD per hour
-- 4 Cores  | 16 GB RAM  | $0.36 USD per hour
-- 8 Cores  | 32 GB RAM  | $0.72 USD per hour
-- 16 Cores | 64 GB RAM  | $1.44 USD per hour
-- 32 Cores | 128 GB RAM | $2.88 USD per hour
-
-
---------------------------------------------------------------------------------
-5. STEP-BY-STEP STRATEGIES TO MAXIMIZE FREE TIER USAGE
+2. DETAILED BREAKDOWN BY PLATFORM
 --------------------------------------------------------------------------------
 
-STRATEGY 1: Always Select 2-Core Machines
-- When provisioning, always specify the 2-core standardLinux32gb machine:
-  gh cs create --repo <user>/<repo> --machine standardLinux32gb
-- This gives you the full 60 hours of development time.
+================================================================================
+A. GITHUB CODESPACES (FREE TIER)
+================================================================================
+1. Monthly Allowance:
+   - Compute: 120 core-hours per month (resets on 1st of each calendar month).
+     * 2-core machine (8 GB RAM): 60 hours of active development time.
+     * 4-core machine (16 GB RAM): 30 hours of active development time.
+   - Storage: 15 GB-months of persistent disk allocation.
+   - Spending Limit: Set to $0.00 USD by default (prevents any accidental charges).
 
-STRATEGY 2: Set Short Idle Timeouts
-- Configure automatic shutdown after inactivity (default is 30m; reduce to 15m or 10m):
-  gh cs create --repo <user>/<repo> --idle-timeout 15m
+2. Architectural Highlights:
+   - Full Linux Virtual Machine: Full root/sudo permissions. You can install system
+     packages (apt-get), run Docker-in-Docker, run long-lived daemons, and host web
+     servers.
+   - Native SSH Access: Connect directly from Windows Terminal via 'gh cs ssh'.
+   - Custom Environment: Define any container base, features, and startup scripts
+     in .devcontainer/devcontainer.json.
+   - Port Forwarding: Forward cloud ports directly to localhost:8000 on Windows.
 
-STRATEGY 3: Delete After Session (Ephemerality)
-- Commit and push your code to GitHub before ending your session:
-  git add .; git commit -m "save work"; git push
-- Delete the codespace immediately:
-  gh cs delete -c <codespace-name> --confirm
-- When you need to work again tomorrow, spin up a new codespace from GitHub in
-  under 30 seconds.
+3. Optimization Strategy for Free Tier:
+   - Always provision with 2-core machines (standardLinux32gb).
+   - Set idle timeout to 15m (gh cs create --idle-timeout 15m).
+   - Storage Hygiene: Delete codespaces (gh cs delete -c <name> --confirm) after
+     pushing code to GitHub, to prevent storage quota exhaustion.
 
-STRATEGY 4: Keep Spending Limit at $0
-- Ensure your GitHub account spending limit remains at $0 so you never incur
-  unexpected charges:
-  GitHub Web -> Settings -> Billing and plans -> Spending limits -> Codespaces: $0.
+================================================================================
+B. GOOGLE COLAB (FREE TIER)
+================================================================================
+1. Monthly Allowance & Quota:
+   - Compute Quota: Dynamic allocation based on demand. Google does not publish a
+     fixed hour number; users typically receive ~15-25 hours of active GPU compute
+     per week before rate limiting triggers.
+   - Reset Cycle: Daily dynamic replenishment.
+
+2. Hardware Capabilities:
+   - CPU: ~2 vCPUs, ~12.7 GB System RAM.
+   - GPU: 1x Nvidia Tesla T4 GPU (15 GB VRAM) for accelerated deep learning.
+   - TPU: TPU v2-8 (optional hardware acceleration).
+   - Storage: ~100 GB ephemeral disk (wiped when runtime disconnects). Can mount
+     personal Google Drive (15 GB free standard Google storage).
+
+3. Strengths & Limitations:
+   - Strengths: Zero setup for PyTorch, TensorFlow, and HuggingFace; free GPU/TPU
+     access; easy sharing of interactive `.ipynb` notebook links.
+   - Limitations: No direct OpenSSH connection (interactive web only); non-persistent
+     disk; disconnects after 90 minutes of inactivity or 12 hours total runtime.
+
+4. Optimization Strategy:
+   - Switch hardware accelerator to 'None' (CPU) when writing/debugging code; enable
+     GPU only during model training loops.
+   - Mount Google Drive (drive.mount('/content/drive')) to save model weights and
+     datasets before the VM terminates.
+
+================================================================================
+C. KAGGLE CLOUD RUNNER (FREE TIER)
+================================================================================
+1. Weekly Allowance:
+   - GPU Compute: 30 hours of FREE GPU per week (resets every Saturday/Sunday).
+   - TPU Compute: 20 hours of FREE TPU v3-8 per week.
+   - CPU Compute: Unlimited sessions (within concurrency caps, up to 10 simultaneous).
+
+2. Hardware Capabilities:
+   - CPU Mode: 4 vCPUs, 30 GB System RAM.
+   - GPU Mode: 2x Nvidia Tesla T4 GPUs (or 1x Nvidia Tesla P100 16GB VRAM).
+   - TPU Mode: TPU v3-8 (128 GB memory total).
+   - Storage: 20 GB persistent working directory output + 73 GB temporary scratch disk.
+
+3. Strengths & Limitations:
+   - Strengths: Most generous guaranteed free GPU hours (30 hrs/week); massive dataset
+     library pre-mounted (no download time); supports background "Save & Run" batch
+     execution up to 12 hours without keeping a browser open.
+   - Limitations: Outbound internet requires one-time SMS phone verification;
+     interactive session idle timeout is 40 minutes.
+
+4. Optimization Strategy:
+   - Use CPU mode for data preprocessing and exploration (saves your 30 GPU hours).
+   - Use background Commit & Run batch jobs so you don't consume interactive idle time.
+   - Use the Kaggle CLI ('kaggle kernels push') to run headless scripts from Windows.
 
 
 --------------------------------------------------------------------------------
-6. HOW TO MONITOR AND AUDIT YOUR CURRENT USAGE
+3. COMPARATIVE SELECTION GUIDE: WHICH FREE RUNNER SHOULD YOU USE?
 --------------------------------------------------------------------------------
 
-Method A: Via Terminal (GitHub CLI)
-List all active codespaces to ensure no orphaned instances are running:
-    gh cs list
+1. CHOOSE GITHUB CODESPACES IF:
+   - You need a true Linux terminal / development environment.
+   - You use screen readers (NVDA / JAWS) and want distraction-free SSH.
+   - You are building software projects, web services, APIs, or CLI tools.
+   - You want seamless Git synchronization with your GitHub repositories.
 
-Method B: Via GitHub Web Portal
-1. Navigate to: https://github.com/settings/billing/summary
-2. Under "Usage this month", look for "Codespaces":
-   - Core hours consumed (e.g. 4.2 / 120.0 hrs)
-   - Storage consumed (e.g. 1.8 / 15.0 GB-months)
-3. Manage or delete codespaces anytime at: https://github.com/codespaces
+2. CHOOSE GOOGLE COLAB IF:
+   - You want quick interactive data exploration or tutorial notebooks (.ipynb).
+   - You need rapid access to an Nvidia T4 GPU for testing deep learning models.
+   - You want to collaborate or share executable Python experiments via web links.
 
-
---------------------------------------------------------------------------------
-7. SUMMARY QUICK REFERENCE TABLE
---------------------------------------------------------------------------------
-+-------------------+--------------------+--------------------+----------------+
-| Metric / Resource | Free Allowance     | Optimal Settings   | Maximum Yield  |
-+-------------------+--------------------+--------------------+----------------+
-| Monthly Compute   | 120 core-hours     | 2-core machine     | 60 hours/month |
-| Monthly Storage   | 15 GB-months       | Delete on exit     | Unlimited runs |
-| Idle Timeout      | Configurable       | 15 minutes         | Saves quota    |
-| Spending Limit    | $0 default safety  | Keep at $0.00      | 100% Free      |
-+-------------------+--------------------+--------------------+----------------+
+3. CHOOSE KAGGLE CLOUD RUNNER IF:
+   - You need high RAM (30 GB) or multi-GPU (2x T4) / TPU compute for heavy training.
+   - You want guaranteed 30 hours/week GPU quotas that do not fluctuate dynamically.
+   - You want to launch long-running 12-hour background training jobs without keeping
+     your laptop on.
 ================================================================================

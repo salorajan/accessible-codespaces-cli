@@ -44,22 +44,22 @@ C:\salo\acb\code_spaces\space\
 - [x] Document scope requirements (`codespace`, `repo`, `workflow`) and refresh commands.
 
 ### Step 2: Sample Python Application Development (CSV Missing Value Analyzer)
-- [ ] Create `data/sample_data.csv` containing numerical, categorical, and missing fields (e.g. sensor or demographic records).
-- [ ] Develop `src/data_analyzer.py`:
+- [x] Create `data/sample_data.csv` containing numerical, categorical, and missing fields (e.g. sensor or demographic records).
+- [x] Develop `src/data_analyzer.py`:
   - Standard library and robust data structures (zero-dependency or lightweight).
   - Identification of missing values (null, empty, NA, NaN strings).
   - Summary statistics computation (row counts, missing counts per column, column types).
   - Imputation strategies: Mean/Median for numeric columns, Mode/Custom constant for categorical columns.
   - Export cleaned dataset to CSV.
-- [ ] Develop `src/cli.py`:
+- [x] Develop `src/cli.py`:
   - Accessible, plain-text output formatted without ambiguous unicode or ANSI color traps.
   - Clear, screen-reader friendly tables and status messages.
-- [ ] Develop `tests/test_data_analyzer.py`:
+- [x] Develop `tests/test_data_analyzer.py`:
   - Automated tests verifying missing value detection, imputation correctness, and export file validity.
-- [ ] Run test suite locally to guarantee 100% test pass rate.
+- [x] Run test suite locally to guarantee 100% test pass rate.
 
 ### Step 3: Accessible Devcontainer Specification
-- [ ] Author `.devcontainer/devcontainer.json`:
+- [x] Author `.devcontainer/devcontainer.json`:
   - Base Image: `mcr.microsoft.com/devcontainers/base:debian` (lightweight, minimal telemetry).
   - Features:
     - `ghcr.io/devcontainers/features/python:1`
@@ -70,7 +70,7 @@ C:\salo\acb\code_spaces\space\
     - Deterministic non-interactive startup.
 
 ### Step 4: Authoring WCAG 2.1 AA Screen Reader Tutorial (`TUTORIAL.md`)
-- [ ] Write hierarchical, linear documentation without nested confusion:
+- [x] Write hierarchical, linear documentation without nested confusion:
   - **Module 1**: Authentication, Quota, and SSH Key Verification.
   - **Module 2**: Codespace Provisioning via CLI (`gh cs create` with non-interactive flags `--repo`, `--branch`, `--machine`, `--display-name`).
   - **Module 3**: Querying & Listing Cloud Workspaces (`gh cs list`, `gh cs view --json`).
@@ -81,14 +81,14 @@ C:\salo\acb\code_spaces\space\
   - **Module 8**: Screen Reader Specific Tips (NVDA Focus/Browse modes, Windows Terminal keymaps, dealing with ANSI escape codes).
 
 ### Step 5: Authoring Project README & License
-- [ ] Author `README.md` with complete usage instructions, quick start CLI commands, and project summary.
-- [ ] Author `LICENSE` (MIT).
+- [x] Author `README.md` with complete usage instructions, quick start CLI commands, and project summary.
+- [x] Author `LICENSE` (MIT).
 
 ### Step 6: Git Repository Initialization & Commit
-- [ ] Initialize local git repository (`git init`).
-- [ ] Configure standard `.gitignore`.
-- [ ] Stage and commit all files with conventional commit messages.
+- [x] Initialize local git repository (`git init`).
+- [x] Configure standard `.gitignore`.
+- [x] Stage and commit all files with conventional commit messages.
 
 ### Step 7: Parallel Documentation & Execution Logging (`report.md`)
-- [ ] Continuously capture exact terminal commands, exit codes, and raw console outputs in `report.md`.
-- [ ] Include pre-flight checks, local test executions, git commands, and codespace CLI reference runs.
+- [x] Continuously capture exact terminal commands, exit codes, and raw console outputs in `report.md`.
+- [x] Include pre-flight checks, local test executions, git commands, and codespace CLI reference runs.

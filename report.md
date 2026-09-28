@@ -247,3 +247,60 @@ Date:   Mon Sep 28 04:40:14 2026 -0700
 On branch master
 nothing to commit, working tree clean
 ```
+
+---
+
+## 5. GitHub Remote Publishing & Cloud Codespace Provisioning
+
+### Command: Create Public GitHub Repository & Push
+```powershell
+gh repo create accessible-codespaces-cli --public --source=. --remote=origin --push
+```
+**Exit Code:** `0`  
+**Timestamp:** `2026-09-28 07:42:00`  
+**Output:**
+```text
+✓ Created repository salorajan/accessible-codespaces-cli on github.com
+  https://github.com/salorajan/accessible-codespaces-cli
+✓ Added remote https://github.com/salorajan/accessible-codespaces-cli.git
+Enumerating objects: 30, done.
+Counting objects: 100% (30/30), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (28/28), done.
+Writing objects: 100% (30/30), 25.70 KiB | 4.28 MiB/s, done.
+Total 30 (delta 5), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (5/5), done.
+To https://github.com/salorajan/accessible-codespaces-cli.git
+ * [new branch]      HEAD -> master
+branch 'master' set up to track 'origin/master'.
+✓ Pushed commits to https://github.com/salorajan/accessible-codespaces-cli.git
+```
+
+---
+
+### Command: Verify Remote Configuration
+```powershell
+git remote -v
+```
+**Exit Code:** `0`  
+**Timestamp:** `2026-09-28 07:42:30`  
+**Output:**
+```text
+origin  https://github.com/salorajan/accessible-codespaces-cli.git (fetch)
+origin  https://github.com/salorajan/accessible-codespaces-cli.git (push)
+```
+
+---
+
+### Command: Provision Cloud Codespace VM via CLI
+```powershell
+gh cs create --repo salorajan/accessible-codespaces-cli --branch master --machine standardLinux32gb --display-name cs-python-dev
+```
+**Exit Code:** `0`  
+**Timestamp:** `2026-09-28 07:43:00`  
+**Output:**
+```text
+  ✓ Codespaces usage for this repository is paid for by salorajan
+cs-python-dev-7g9xrq59vjcpjwg
+```
+
